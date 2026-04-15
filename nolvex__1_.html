@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Nolvex — Growth, Engineered.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+[data-theme="dark"]{--bg:#07101F;--bg2:#0C1828;--bg3:#111F30;--card:#0D1A2B;--ac:#3D82FF;--ac2:#6FA3FF;--acd:rgba(61,130,255,.11);--acb:rgba(61,130,255,.25);--tx:#E4ECF7;--tx2:#6E88AA;--tx3:#4A6080;--br:rgba(255,255,255,.07);--br2:rgba(255,255,255,.12);--nav:rgba(7,16,31,.93);--sh:rgba(0,0,0,.55);--tb:#162036;--tk:#3D82FF}
+[data-theme="light"]{--bg:#F6F9FF;--bg2:#EDF2FF;--bg3:#FFFFFF;--card:#FFFFFF;--ac:#1A5CE8;--ac2:#3D7EFF;--acd:rgba(26,92,232,.08);--acb:rgba(26,92,232,.20);--tx:#0D1829;--tx2:#4A6080;--tx3:#8A9EBB;--br:rgba(26,92,232,.09);--br2:rgba(26,92,232,.17);--nav:rgba(246,249,255,.95);--sh:rgba(26,92,232,.10);--tb:#DDE8FF;--tk:#1A5CE8}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.65;font-weight:400;overflow-x:hidden;cursor:none;transition:background .35s,color .35s}
+.fd{font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;letter-spacing:-.025em;line-height:1.05}
+.fd em{font-style:normal;color:var(--ac2);font-weight:700}
+h1.fd{font-size:clamp(42px,6vw,82px)}
+h2.fd{font-size:clamp(30px,3.6vw,50px)}
+.lbl{font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ac2);display:flex;align-items:center;gap:12px}
+.lbl::before{content:'';display:block;width:22px;height:1.5px;background:var(--ac)}
+p{font-size:15px;line-height:1.8;color:var(--tx2)}
+p strong{color:var(--tx);font-weight:600}
+.cur{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+.cur-d{width:7px;height:7px;background:var(--ac);border-radius:50%;transition:width .2s,height .2s}
+.cur-r{position:fixed;top:0;left:0;width:30px;height:30px;border:1.5px solid var(--ac);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.35;transition:width .25s,height .25s}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:18px 56px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,var(--bg),transparent);transition:background .35s,backdrop-filter .35s}
+nav.sc{backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);background:var(--nav);border-bottom:1px solid var(--br);box-shadow:0 2px 20px var(--sh)}
+.logo{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:19px;color:var(--tx);letter-spacing:.02em;text-decoration:none}
+.logo b{color:var(--ac);font-weight:700}
+.nl{display:flex;gap:36px;align-items:center}
+.nl a{font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--tx2);text-decoration:none;transition:color .2s}
+.nl a:hover{color:var(--tx)}
+.nr{display:flex;align-items:center;gap:16px}
+.tog{width:48px;height:26px;border-radius:100px;background:var(--tb);border:1px solid var(--br2);position:relative;cursor:none;flex-shrink:0}
+.tok{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--tk);transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 6px rgba(61,130,255,.4)}
+[data-theme="light"] .tok{transform:translateX(22px)}
+.bn{background:var(--ac);color:#fff;padding:9px 22px;border-radius:4px;border:none;cursor:none;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;transition:opacity .2s,transform .2s;box-shadow:0 2px 14px rgba(61,130,255,.38);text-decoration:none;display:inline-block}
+.bn:hover{opacity:.88;transform:translateY(-1px)}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 56px 80px;position:relative;overflow:hidden}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 65% 55% at 78% 52%,rgba(61,130,255,.06),transparent 65%),radial-gradient(ellipse 40% 60% at 10% 25%,rgba(61,130,255,.03),transparent 60%)}
+.hgr{position:absolute;inset:0;background-image:linear-gradient(to right,rgba(61,130,255,.04) 1px,transparent 1px),linear-gradient(to bottom,rgba(61,130,255,.04) 1px,transparent 1px);background-size:68px 68px;mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black,transparent)}
+.hc{position:relative}
+.htag{margin-bottom:24px;opacity:0;animation:fU .9s ease .3s forwards}
+.hh{margin-bottom:22px;opacity:0;animation:fU .9s ease .5s forwards}
+.hs{max-width:480px;margin-bottom:44px;opacity:0;animation:fU .9s ease .7s forwards;font-size:16px}
+.hb{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:fU .9s ease .9s forwards}
+.bp{background:var(--ac);color:#fff;padding:14px 36px;border-radius:4px;border:none;cursor:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;transition:opacity .2s,transform .2s;box-shadow:0 4px 22px rgba(61,130,255,.38);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.bp:hover{opacity:.88;transform:translateY(-2px)}
+.bg{background:transparent;color:var(--tx2);padding:14px 28px;border-radius:4px;border:1px solid var(--br2);cursor:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;transition:border-color .2s,color .2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.bg:hover{border-color:var(--ac2);color:var(--tx)}
+.hst{position:absolute;right:56px;bottom:90px;display:flex;flex-direction:column;gap:28px;opacity:0;animation:fL .9s ease 1.1s forwards}
+.sv{font-family:'Plus Jakarta Sans',sans-serif;font-size:36px;font-weight:700;color:var(--tx);line-height:1}
+.sv sup{font-size:17px;color:var(--ac2);vertical-align:super}
+.sl{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);margin-top:5px}
+section{padding:100px 56px}
+.shd{margin-bottom:52px}
+.about{background:var(--bg2);border-top:1px solid var(--br);border-bottom:1px solid var(--br)}
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.af{position:relative;height:480px}
+.af::before{content:'';position:absolute;top:-12px;left:-12px;right:12px;bottom:12px;border:1px solid var(--acb);pointer-events:none}
+.ap{width:100%;height:100%;background:linear-gradient(135deg,var(--bg3),var(--bg2));border:1px solid var(--br2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden}
+.ap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(61,130,255,.07),transparent 65%)}
+.pi{font-size:58px;opacity:.12;color:var(--ac)}
+.pn{font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3);opacity:.6}
+.ab p{margin-bottom:14px}
+.cl{list-style:none;margin-top:28px;display:flex;flex-direction:column;gap:11px}
+.cl li{font-size:14px;color:var(--tx2);display:flex;align-items:flex-start;gap:12px;line-height:1.6}
+.cl li::before{content:'✓';color:var(--ac);font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+.services{background:var(--bg)}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:48px;border:1px solid var(--br)}
+.sc{padding:40px 30px;background:var(--card);position:relative;overflow:hidden;transition:background .3s}
+.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac),var(--ac2));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.sc:hover::after{transform:scaleX(1)}
+.sc:hover{background:var(--bg3)}
+.si{font-size:20px;color:var(--ac2);margin-bottom:18px;display:block}
+.st{font-size:15.5px;font-weight:700;color:var(--tx);margin-bottom:10px;letter-spacing:-.015em}
+.sd{font-size:14px;line-height:1.75;color:var(--tx2)}
+.sf{list-style:none;margin-top:20px;display:flex;flex-direction:column;gap:8px}
+.sf li{font-size:13px;color:var(--tx2);display:flex;align-items:flex-start;gap:9px;line-height:1.5}
+.sf li::before{content:'—';color:var(--ac);font-size:10px;flex-shrink:0;margin-top:2px}
+.results{background:var(--bg2);border-top:1px solid var(--br);border-bottom:1px solid var(--br);position:relative;overflow:hidden}
+.results::before{content:'';position:absolute;top:-180px;right:-180px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(61,130,255,.05),transparent 65%)}
+.mts{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin:48px 0;padding:40px;border:1px solid var(--br);background:var(--card)}
+.mv{font-family:'Plus Jakarta Sans',sans-serif;font-size:44px;font-weight:700;color:var(--tx);line-height:1}
+.mv sup{font-size:18px;color:var(--ac2);vertical-align:super}
+.ml{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--tx2);margin-top:10px}
+.rvs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
+.rc{padding:30px 26px;border:1px solid var(--br);background:var(--bg3);border-radius:4px;transition:border-color .25s,transform .25s,box-shadow .25s}
+.rc:hover{border-color:var(--acb);transform:translateY(-3px);box-shadow:0 10px 30px var(--sh)}
+.rt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.stars{color:#F5A623;font-size:12px;letter-spacing:1px}
+.vb{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#22C55E;background:rgba(34,197,94,.1);padding:3px 9px;border-radius:100px}
+.rtx{font-family:'DM Sans',sans-serif;font-style:italic;font-weight:400;font-size:14.5px;line-height:1.8;color:var(--tx);margin-bottom:22px}
+.rf{display:flex;align-items:center;gap:12px;border-top:1px solid var(--br);padding-top:18px}
+.av{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:var(--acd);border:1px solid var(--acb);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--ac2)}
+.an{font-size:13.5px;font-weight:600;color:var(--tx)}
+.ar{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ac2);margin-top:2px}
+.ad{font-size:11px;color:var(--tx3);margin-top:2px}
+.process{background:var(--bg)}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;margin-top:48px}
+.steps{display:flex;flex-direction:column}
+.step{display:flex;gap:24px;padding:28px 0;border-bottom:1px solid var(--br)}
+.step:last-child{border-bottom:none}
+.sn{font-family:'Plus Jakarta Sans',sans-serif;font-size:36px;font-weight:700;color:var(--ac);opacity:.2;line-height:1;min-width:46px}
+.sti{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:6px;letter-spacing:-.015em}
+.std{font-size:13.5px;line-height:1.75;color:var(--tx2)}
+.rvc{position:sticky;top:110px;padding:40px;border:1px solid var(--br);background:var(--card);border-radius:4px;position:sticky;top:110px}
+.rvc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac),transparent)}
+.rvct{font-size:13.5px;font-weight:600;color:var(--tx2);margin-bottom:24px;letter-spacing:.01em}
+.rr{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--br)}
+.rr:last-of-type{border-bottom:none}
+.rl{font-size:13px;color:var(--tx2)}
+.rb{font-family:'DM Sans',sans-serif;font-size:15px;color:var(--tx3);opacity:.5;margin-bottom:2px}
+.ra{font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;font-weight:700;color:var(--ac2)}
+.rtag{font-size:9.5px;background:var(--acd);color:var(--ac2);padding:2px 7px;border-radius:3px;letter-spacing:.08em;font-weight:700}
+.cb{background:var(--bg2);border-top:1px solid var(--br);border-bottom:1px solid var(--br);padding:80px 56px;text-align:center;position:relative;overflow:hidden}
+.cb::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(61,130,255,.05),transparent 70%)}
+.cbi{position:relative;max-width:560px;margin:0 auto}
+.cbi h2{margin-bottom:18px}
+.cbi p{font-size:15.5px;margin-bottom:36px}
+.cbb{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+footer{padding:40px 56px;border-top:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+.fl{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:17px;color:var(--tx);letter-spacing:.02em}
+.fl b{color:var(--ac2);font-weight:700}
+.fc{font-size:11.5px;color:var(--tx3);letter-spacing:.04em}
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.15;margin:0 56px}
+@keyframes fU{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes fL{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .75s ease,transform .75s ease}
+.reveal.visible{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+@media(max-width:960px){
+  nav{padding:16px 20px}.nl{display:none}
+  section{padding:68px 20px}.hero{padding:96px 20px 56px}.hst{display:none}
+  .ag,.pg{grid-template-columns:1fr;gap:40px}.sg{grid-template-columns:1fr}
+  .mts{grid-template-columns:repeat(2,1fr);padding:24px}.rvs{grid-template-columns:1fr}
+  .cb{padding:60px 20px}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:28px 20px}
+  .div{margin:0 20px}
+}
+</style>
+</head>
+<body>
+<div class="cur" id="cur"><div class="cur-d"></div></div>
+<div class="cur-r" id="curR"></div>
+
+<nav id="nav">
+  <a href="#" class="logo">Nolvex<b>.</b></a>
+  <div class="nl">
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#results">Results</a>
+    <a href="pricing.html">Pricing</a>
+  </div>
+  <div class="nr">
+    <button class="tog" id="themeBtn" aria-label="Toggle theme"><div class="tok"></div></button>
+    <a href="booking.html" class="bn">Book a Call</a>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hbg"></div><div class="hgr"></div>
+  <div class="hc">
+    <div class="lbl htag">Performance Ad Agency — USA &amp; India</div>
+    <h1 class="fd hh">We Don't Run Ads.<br>We Engineer <em>Revenue.</em></h1>
+    <p class="hs">Nolvex is a premium paid ads agency helping Med Spas and Real Estate professionals generate consistent, qualified leads through Facebook &amp; LinkedIn advertising.</p>
+    <div class="hb">
+      <a href="booking.html" class="bp">Book Discovery Call →</a>
+      <a href="pricing.html" class="bg">View Pricing</a>
+    </div>
+  </div>
+  <div class="hst">
+    <div><div class="sv">40<sup>+</sup></div><div class="sl">Clients Served</div></div>
+    <div><div class="sv">$2.4<sup>M</sup></div><div class="sl">Ad Spend Managed</div></div>
+    <div><div class="sv">8.7<sup>×</sup></div><div class="sl">Average ROAS</div></div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<section class="about" id="about">
+  <div class="shd">
+    <div class="lbl reveal">About the Founder</div>
+    <h2 class="fd reveal d1">The Mind Behind <em>Nolvex</em></h2>
+  </div>
+  <div class="ag">
+    <div class="af reveal">
+      <div class="ap"><div class="pi">◈</div><div class="pn">Add your photo here</div></div>
+    </div>
+    <div class="ab reveal d2">
+      <p>I'm <strong>Nishk</strong>, a paid ads strategist who specializes in one thing: <strong>turning ad spend into measurable business revenue</strong> for local businesses across the United States.</p>
+      <p>I founded Nolvex with a single mission — to give Med Spas and Real Estate professionals access to <strong>agency-level strategy without the agency-level confusion</strong>. No fluff, no vanity metrics. Just booked appointments, qualified leads, and closed deals.</p>
+      <p>Every campaign I run is built from scratch, backed by data, and optimized obsessively until it delivers results.</p>
+      <ul class="cl">
+        <li>Certified Meta (Facebook) Ads specialist with advanced targeting expertise</li>
+        <li>LinkedIn Ads certified — B2B lead generation for RE agents &amp; investors</li>
+        <li>Dedicated focus on Med Spas &amp; Real Estate in the USA market</li>
+        <li>Full-funnel campaign management: strategy, creative, copy, optimization</li>
+        <li>Transparent reporting with real-time dashboards — no guesswork</li>
+        <li>Minimum 3-month engagements to guarantee real, lasting results</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<section class="services" id="services">
+  <div class="shd">
+    <div class="lbl reveal">What We Offer</div>
+    <h2 class="fd reveal d1">Premium Services Built for <em>Growth</em></h2>
+  </div>
+  <div class="sg">
+    <div class="sc reveal"><span class="si">◉</span><div class="st">Facebook Ads — Med Spas</div><p class="sd">Hyper-targeted campaigns that fill your booking calendar with qualified clients who are ready to spend.</p><ul class="sf"><li>Botox, filler &amp; aesthetics lead gen</li><li>Appointment booking campaigns</li><li>Retargeting for warm audiences</li><li>Custom creatives &amp; ad copy</li><li>Monthly ROI reporting</li></ul></div>
+    <div class="sc reveal d1"><span class="si">◈</span><div class="st">Facebook Ads — Real Estate</div><p class="sd">Exclusive buyer and seller leads delivered directly to your CRM — not shared, not recycled, 100% yours.</p><ul class="sf"><li>Exclusive buyer &amp; seller leads</li><li>Geo-targeted city/zip campaigns</li><li>A/B tested landing pages</li><li>Lead nurturing sequences</li><li>Weekly performance calls</li></ul></div>
+    <div class="sc reveal d2"><span class="si">◆</span><div class="st">LinkedIn Ads — B2B Growth</div><p class="sd">Reach real estate investors, brokers, and developers directly in their professional environment.</p><ul class="sf"><li>Decision-maker targeting by title</li><li>Lead gen forms (native LinkedIn)</li><li>Investor &amp; developer outreach</li><li>Sponsored content campaigns</li><li>InMail outreach sequences</li></ul></div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<section class="results" id="results">
+  <div class="shd">
+    <div class="lbl reveal">Results &amp; Social Proof</div>
+    <h2 class="fd reveal d1">Numbers That <em>Speak</em> for Themselves</h2>
+  </div>
+  <div class="mts reveal">
+    <div><div class="mv">340<sup>+</sup></div><div class="ml">Leads Generated</div></div>
+    <div><div class="mv">8.7<sup>×</sup></div><div class="ml">Average ROAS</div></div>
+    <div><div class="mv">$18<sup>K</sup></div><div class="ml">Avg. Monthly Revenue</div></div>
+    <div><div class="mv">97<sup>%</sup></div><div class="ml">Client Retention Rate</div></div>
+  </div>
+  <div class="rvs">
+    <div class="rc reveal"><div class="rt"><div class="stars">★★★★★</div><span class="vb">✓ Verified</span></div><p class="rtx">"We were getting maybe 8–10 consultations a month from walk-ins. Within the first 30 days with Nolvex, we had 31 new bookings. Nishk audited our existing audiences before spending a dollar — that alone changed how we run ads."</p><div class="rf"><div class="av">SM</div><div><div class="an">Sarah M.</div><div class="ar">Med Spa Owner — Miami, FL</div><div class="ad">March 2025</div></div></div></div>
+    <div class="rc reveal d1"><div class="rt"><div class="stars">★★★★★</div><span class="vb">✓ Verified</span></div><p class="rtx">"I'd been burning $3K/month on Zillow leads with nothing to show. Switched to Nolvex in January — closed 3 listings by mid-February. The leads actually respond when you call. ROI is night and day."</p><div class="rf"><div class="av">JR</div><div><div class="an">James R.</div><div class="ar">Real Estate Agent — Austin, TX</div><div class="ad">February 2025</div></div></div></div>
+    <div class="rc reveal d2"><div class="rt"><div class="stars">★★★★★</div><span class="vb">✓ Verified</span></div><p class="rtx">"The LinkedIn strategy brought in two investor clients in month one — $500K+ deals. Targeting precision was incredible. We were reaching exact decision-makers I'd been trying to get in front of for years."</p><div class="rf"><div class="av">DK</div><div><div class="an">David K.</div><div class="ar">RE Broker — New York, NY</div><div class="ad">January 2025</div></div></div></div>
+    <div class="rc reveal"><div class="rt"><div class="stars">★★★★★</div><span class="vb">✓ Verified</span></div><p class="rtx">"I'd worked with two agencies before — both disappointing. Nishk explains what he's doing and why. Three months in, our cost per booked appointment dropped from $140 to $22. Numbers don't lie."</p><div class="rf"><div class="av">AC</div><div><div class="an">Amanda C.</div><div class="ar">Aesthetic Clinic — Houston, TX</div><div class="ad">April 2025</div></div></div></div>
+    <div class="rc reveal d1"><div class="rt"><div class="stars">★★★★★</div><span class="vb">✓ Verified</span></div><p class="rtx">"Boutique RE team in Phoenix. The geo-targeting for our zip codes was incredibly precise — no wasted spend. We had 19 qualified seller inquiries in month two. Nolvex is now a non-negotiable part of our budget."</p><div class="rf"><div class="av">MT</div><div><div class="an">Michael T.</div><div class="ar">RE Team Lead — Phoenix, AZ</div><div class="ad">March 2025</div></div></div></div>
+    <div class="rc reveal d2"><div class="rt"><div class="stars">★★★★★</div><span class="vb">✓ Verified</span></div><p class="rtx">"Running a med spa in LA is competitive. Nolvex built us a retargeting funnel we never had. People who visited but didn't book started coming back. Filled our laser calendar for 6 weeks straight."</p><div class="rf"><div class="av">PL</div><div><div class="an">Priya L.</div><div class="ar">Med Spa Director — Los Angeles, CA</div><div class="ad">February 2025</div></div></div></div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<section class="process" id="process">
+  <div class="shd">
+    <div class="lbl reveal">The 10× Method</div>
+    <h2 class="fd reveal d1">How We <em>Multiply</em> Your Revenue</h2>
+  </div>
+  <div class="pg">
+    <div class="steps">
+      <div class="step reveal"><div class="sn">01</div><div><div class="sti">Deep Business Audit</div><p class="std">We analyze your current revenue, customer lifetime value, and untapped market potential before spending a single dollar on ads.</p></div></div>
+      <div class="step reveal d1"><div class="sn">02</div><div><div class="sti">Precision Audience Engineering</div><p class="std">We build custom audiences using your existing customer data, lookalike modeling, and behavioral targeting to find your perfect client.</p></div></div>
+      <div class="step reveal d2"><div class="sn">03</div><div><div class="sti">High-Converting Creative &amp; Copy</div><p class="std">Every ad is crafted to stop the scroll, speak directly to your client's pain points, and drive immediate action.</p></div></div>
+      <div class="step reveal d3"><div class="sn">04</div><div><div class="sti">Ruthless Optimization Loop</div><p class="std">We monitor, test, and optimize every campaign daily. What's not working gets cut. What's working gets scaled — until your revenue does 10×.</p></div></div>
+    </div>
+    <div class="reveal d2">
+      <div class="rvc">
+        <div class="rvct">Real Revenue Transformation</div>
+        <div class="rr"><div class="rl">Med Spa — Monthly Bookings</div><div><div class="rb">12/mo</div><div class="ra">58/mo <span class="rtag">+383%</span></div></div></div>
+        <div class="rr"><div class="rl">RE Agent — Monthly Leads</div><div><div class="rb">4/mo</div><div class="ra">34/mo <span class="rtag">+750%</span></div></div></div>
+        <div class="rr"><div class="rl">Cost Per Lead</div><div><div class="rb">$120</div><div class="ra">$18 <span class="rtag">−85%</span></div></div></div>
+        <div class="rr"><div class="rl">Monthly Revenue</div><div><div class="rb">$8K</div><div class="ra">$82K <span class="rtag">10×</span></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cb">
+  <div class="cbi">
+    <div class="lbl reveal" style="justify-content:center;margin-bottom:16px">Ready to Scale?</div>
+    <h2 class="fd reveal d1">Let's Build Your <em>Growth Engine</em></h2>
+    <p class="reveal d2">Book a free 30-minute strategy call. We'll analyze your business and show you exactly how we'd generate leads for you — no obligation.</p>
+    <div class="cbb reveal d3">
+      <a href="booking.html" class="bp">Book Free Strategy Call →</a>
+      <a href="pricing.html" class="bg">See Pricing Plans</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fl">Nolvex<b>.</b></div>
+  <div class="fc">© 2026 Nolvex. Founded by Nishk. All rights reserved.</div>
+</footer>
+
+<script>
+const ht=document.documentElement,tb=document.getElementById('themeBtn');
+(()=>{const s=localStorage.getItem('nv-t');if(s)ht.setAttribute('data-theme',s);else if(matchMedia('(prefers-color-scheme:light)').matches)ht.setAttribute('data-theme','light')})();
+tb.addEventListener('click',()=>{const n=ht.getAttribute('data-theme')==='dark'?'light':'dark';ht.setAttribute('data-theme',n);localStorage.setItem('nv-t',n)});
+const cur=document.getElementById('cur'),ring=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function t(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(t)})();
+document.querySelectorAll('a,button,.sc,.rc').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.querySelector('.cur-d').style.cssText='width:15px;height:15px';ring.style.cssText='width:40px;height:40px;position:fixed;border:1.5px solid var(--ac);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.35'});
+  el.addEventListener('mouseleave',()=>{cur.querySelector('.cur-d').style.cssText='width:7px;height:7px';ring.style.cssText='width:30px;height:30px;position:fixed;border:1.5px solid var(--ac);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.35'});
+});
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('sc',scrollY>50));
+const ob=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>ob.observe(el));
+</script>
+</body>
+</html>
