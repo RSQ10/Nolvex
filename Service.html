@@ -1,568 +1,392 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nolvex — Services & Plans</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Nolvex — Book a Strategy Call</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  [data-theme="dark"] {
-    --bg: #060C18; --bg-mid: #0B1220; --bg-light: #101928; --bg-card: #0E1825;
-    --accent: #3B7DFF; --accent-light: #6FA0FF; --accent-dim: rgba(59,125,255,0.12);
-    --accent-border: rgba(59,125,255,0.28); --text: #E8EEF8; --text-dim: #7A8FAD;
-    --border: rgba(255,255,255,0.07); --border-strong: rgba(255,255,255,0.13);
-    --shadow: rgba(0,0,0,0.5); --nav-bg: rgba(6,12,24,0.92);
-    --toggle-bg: #1a2540; --toggle-knob: #3B7DFF;
-  }
-  [data-theme="light"] {
-    --bg: #F4F7FF; --bg-mid: #EBF0FD; --bg-light: #FFFFFF; --bg-card: #FFFFFF;
-    --accent: #1A5CE8; --accent-light: #3B7DFF; --accent-dim: rgba(26,92,232,0.09);
-    --accent-border: rgba(26,92,232,0.22); --text: #0E1825; --text-dim: #4A5980;
-    --border: rgba(26,92,232,0.10); --border-strong: rgba(26,92,232,0.18);
-    --shadow: rgba(26,92,232,0.12); --nav-bg: rgba(244,247,255,0.95);
-    --toggle-bg: #dce6ff; --toggle-knob: #1A5CE8;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg); color: var(--text);
-    font-family: 'DM Sans', sans-serif; font-weight: 300;
-    overflow-x: hidden; cursor: none;
-    transition: background 0.4s ease, color 0.4s ease;
-  }
-
-  .cursor { position: fixed; top:0; left:0; width:8px; height:8px; background:var(--accent); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .25s,height .25s; }
-  .cursor-ring { position:fixed; top:0; left:0; width:32px; height:32px; border:1.5px solid var(--accent); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:.4; }
-
-  body::before {
-    content:''; position:fixed; inset:0;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events:none; z-index:1000; opacity:.14;
-  }
-
-  nav {
-    position: fixed; top:0; left:0; right:0; z-index:200;
-    padding: 20px 60px; display:flex; align-items:center; justify-content:space-between;
-    background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
-    transition: backdrop-filter 0.4s, background 0.4s;
-  }
-  nav.scrolled {
-    backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
-    background: var(--nav-bg); border-bottom: 1px solid var(--border);
-  }
-  .nav-logo { font-family:'Syne',sans-serif; font-size:21px; font-weight:700; color:var(--text); letter-spacing:.08em; text-decoration:none; }
-  .nav-logo span { color: var(--accent); }
-  .nav-links { display:flex; gap:40px; align-items:center; }
-  .nav-links a { font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:var(--text-dim); text-decoration:none; font-weight:500; transition:color .25s; font-family:'DM Sans',sans-serif; }
-  .nav-links a:hover { color: var(--accent-light); }
-  .nav-right { display:flex; align-items:center; gap:20px; }
-
-  .theme-toggle { display:flex; align-items:center; gap:8px; background:var(--toggle-bg); border:1px solid var(--border-strong); border-radius:100px; padding:4px; cursor:none; transition:all .3s; position:relative; width:52px; height:28px; }
-  .theme-toggle-knob { position:absolute; top:3px; left:3px; width:20px; height:20px; background:var(--toggle-knob); border-radius:50%; transition:transform .3s cubic-bezier(.34,1.56,.64,1); box-shadow:0 2px 8px rgba(59,125,255,.4); }
-  [data-theme="light"] .theme-toggle-knob { transform: translateX(24px); }
-  .theme-toggle-icon { position:absolute; font-size:11px; transition:opacity .3s; }
-  .icon-moon { left:6px; opacity:1; } .icon-sun { right:6px; opacity:.4; }
-  [data-theme="light"] .icon-moon { opacity:.4; } [data-theme="light"] .icon-sun { opacity:1; }
-
-  .nav-cta { background:var(--accent); border:none; color:#fff; padding:10px 24px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; cursor:none; border-radius:3px; transition:all .25s; text-decoration:none; display:inline-block; }
-  .nav-cta:hover { opacity:.88; transform:translateY(-1px); }
-
-  /* PAGE HERO */
-  .page-hero {
-    padding: 160px 60px 80px;
-    background: var(--bg-mid);
-    border-bottom: 1px solid var(--border);
-    position: relative; overflow: hidden;
-  }
-  .page-hero::before {
-    content: ''; position: absolute; top: -100px; right: -100px;
-    width: 500px; height: 500px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(59,125,255,0.07), transparent 70%);
-  }
-  .back-link {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 12px; color: var(--text-dim); text-decoration: none;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    margin-bottom: 32px; transition: color 0.25s;
-    font-family: 'DM Sans', sans-serif; font-weight: 500;
-  }
-  .back-link:hover { color: var(--accent-light); }
-  .page-hero-tag {
-    font-size: 10px; letter-spacing: 0.36em; text-transform: uppercase;
-    color: var(--accent-light); margin-bottom: 18px;
-    display: flex; align-items: center; gap: 14px;
-    font-family: 'DM Sans', sans-serif; font-weight: 500;
-  }
-  .page-hero-tag::before { content:''; display:block; width:28px; height:1px; background:var(--accent); }
-  .page-hero h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(40px, 5vw, 72px);
-    font-weight: 400; line-height: 1.08;
-    letter-spacing: -0.01em; color: var(--text);
-    max-width: 700px;
-  }
-  .page-hero h1 em { font-style: italic; color: var(--accent-light); }
-  .page-hero-sub {
-    font-size: 16px; line-height: 1.85; color: var(--text-dim);
-    max-width: 560px; margin-top: 22px; font-weight: 300;
-  }
-
-  /* MAIN CONTENT */
-  .services-page { padding: 80px 60px; }
-  .services-page-inner { max-width: 1100px; margin: 0 auto; }
-
-  /* PLAN HEADER */
-  .plan-section { margin-bottom: 80px; }
-  .plan-header {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    border-bottom: 1px solid var(--border); padding-bottom: 32px; margin-bottom: 48px;
-    gap: 40px; flex-wrap: wrap;
-  }
-  .plan-label {
-    font-family: 'Syne', sans-serif; font-size: 11px; letter-spacing: 0.3em;
-    text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
-  }
-  .plan-name {
-    font-family: 'DM Serif Display', serif;
-    font-size: 42px; font-weight: 400; color: var(--text); line-height: 1;
-  }
-  .plan-price {
-    font-family: 'DM Serif Display', serif;
-    font-size: 52px; font-weight: 400; color: var(--accent-light); line-height: 1;
-    text-align: right;
-  }
-  .plan-price span { font-size: 22px; vertical-align: super; }
-  .plan-price-cycle {
-    font-size: 12px; color: var(--text-dim); letter-spacing: 0.08em;
-    text-align: right; margin-top: 4px;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .plan-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--accent-dim); border: 1px solid var(--accent-border);
-    color: var(--accent-light); padding: 6px 14px; border-radius: 100px;
-    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
-    font-weight: 600; font-family: 'DM Sans', sans-serif; margin-bottom: 12px;
-  }
-  .plan-badge.featured { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-  .plan-desc {
-    font-size: 15.5px; line-height: 1.85; color: var(--text-dim); margin-bottom: 40px; max-width: 680px;
-  }
-
-  /* DELIVERABLES GRID */
-  .deliverables {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 40px;
-  }
-  .deliverable-block {
-    padding: 28px 26px; border: 1px solid var(--border);
-    background: var(--bg-card); border-radius: 4px;
-    transition: border-color 0.3s;
-  }
-  .deliverable-block:hover { border-color: var(--accent-border); }
-  .deliverable-icon { font-size: 18px; color: var(--accent-light); margin-bottom: 14px; display: block; }
-  .deliverable-title {
-    font-family: 'DM Serif Display', serif; font-size: 18px;
-    color: var(--text); margin-bottom: 10px;
-  }
-  .deliverable-desc { font-size: 13.5px; line-height: 1.7; color: var(--text-dim); }
-  .deliverable-list {
-    list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 7px;
-  }
-  .deliverable-list li {
-    font-size: 12.5px; color: var(--text-dim);
-    display: flex; align-items: flex-start; gap: 10px; line-height: 1.5;
-  }
-  .deliverable-list li::before { content: '—'; color: var(--accent); font-size: 10px; flex-shrink:0; margin-top:2px; }
-
-  /* PLAN CTA */
-  .plan-cta-row {
-    display: flex; align-items: center; gap: 20px; margin-top: 36px; flex-wrap: wrap;
-  }
-  .cta-primary {
-    background: var(--accent); color: #fff;
-    padding: 15px 40px; font-family: 'DM Sans', sans-serif;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
-    border: none; cursor: none; border-radius: 3px; transition: all 0.25s;
-    box-shadow: 0 4px 24px rgba(59,125,255,0.3); text-decoration: none; display: inline-block;
-  }
-  .cta-primary:hover { opacity: 0.88; transform: translateY(-2px); }
-  .cta-note { font-size: 12.5px; color: var(--text-dim); font-style: italic; }
-
-  .plan-separator {
-    height: 1px; background: linear-gradient(to right, transparent, var(--accent), transparent);
-    opacity: 0.2; margin: 0 0 80px;
-  }
-
-  /* FAQ */
-  .faq-section { margin-top: 60px; }
-  .faq-title {
-    font-family: 'DM Serif Display', serif; font-size: 36px;
-    color: var(--text); margin-bottom: 36px;
-  }
-  .faq-item {
-    border-bottom: 1px solid var(--border); padding: 24px 0;
-  }
-  .faq-q {
-    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
-    color: var(--text); cursor: none; display: flex; justify-content: space-between;
-    align-items: center; gap: 16px;
-  }
-  .faq-q::after { content: '+'; color: var(--accent); font-size: 20px; flex-shrink: 0; }
-  .faq-q.open::after { content: '−'; }
-  .faq-a {
-    font-size: 14px; line-height: 1.8; color: var(--text-dim);
-    max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s;
-  }
-  .faq-a.open { max-height: 300px; padding-top: 14px; }
-
-  footer { padding:40px 60px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--bg); }
-  .footer-logo { font-family:'Syne',sans-serif; font-size:19px; font-weight:700; color:var(--text); letter-spacing:.08em; }
-  .footer-logo span { color: var(--accent-light); }
-  .footer-copy { font-size:12px; color:var(--text-dim); }
-
-  .reveal { opacity:0; transform:translateY(28px); transition:opacity .8s ease,transform .8s ease; }
-  .reveal.visible { opacity:1; transform:translateY(0); }
-  .reveal-delay-1 { transition-delay:.1s; } .reveal-delay-2 { transition-delay:.2s; }
-
-  @media (max-width: 900px) {
-    nav { padding: 18px 24px; } .nav-links { display: none; }
-    .page-hero, .services-page { padding-left: 24px; padding-right: 24px; }
-    .deliverables { grid-template-columns: 1fr; }
-    .plan-header { flex-direction: column; align-items: flex-start; }
-    .plan-price { text-align: left; }
-    footer { flex-direction: column; gap: 12px; text-align: center; padding: 28px 24px; }
-  }
+[data-theme="dark"]{--bg:#07101F;--bg2:#0C1828;--bg3:#111F30;--card:#0D1A2B;--ac:#3D82FF;--ac2:#6FA3FF;--acd:rgba(61,130,255,.11);--acb:rgba(61,130,255,.25);--tx:#E4ECF7;--tx2:#6E88AA;--tx3:#4A6080;--br:rgba(255,255,255,.07);--br2:rgba(255,255,255,.12);--nav:rgba(7,16,31,.93);--sh:rgba(0,0,0,.55);--tb:#162036;--tk:#3D82FF;--input:#0D1A2B;--err:#FF6B6B}
+[data-theme="light"]{--bg:#F6F9FF;--bg2:#EDF2FF;--bg3:#FFFFFF;--card:#FFFFFF;--ac:#1A5CE8;--ac2:#3D7EFF;--acd:rgba(26,92,232,.08);--acb:rgba(26,92,232,.20);--tx:#0D1829;--tx2:#4A6080;--tx3:#8A9EBB;--br:rgba(26,92,232,.09);--br2:rgba(26,92,232,.17);--nav:rgba(246,249,255,.95);--sh:rgba(26,92,232,.10);--tb:#DDE8FF;--tk:#1A5CE8;--input:#FFFFFF;--err:#D93025}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.65;font-weight:400;overflow-x:hidden;cursor:none;transition:background .35s,color .35s;min-height:100vh}
+.fd{font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;letter-spacing:-.025em;line-height:1.05}
+.fd em{font-style:normal;color:var(--ac2);font-weight:700}
+h1.fd{font-size:clamp(34px,4.5vw,54px)}
+.lbl{font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ac2);display:flex;align-items:center;gap:12px}
+.lbl::before{content:'';display:block;width:22px;height:1.5px;background:var(--ac)}
+p{font-size:15px;line-height:1.8;color:var(--tx2)}
+.cur{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+.cur-d{width:7px;height:7px;background:var(--ac);border-radius:50%;transition:width .2s,height .2s}
+.cur-r{position:fixed;top:0;left:0;width:30px;height:30px;border:1.5px solid var(--ac);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.35;transition:width .25s,height .25s}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:18px 56px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,var(--bg),transparent);transition:background .35s,backdrop-filter .35s}
+nav.sc{backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);background:var(--nav);border-bottom:1px solid var(--br);box-shadow:0 2px 20px var(--sh)}
+.logo{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:19px;color:var(--tx);letter-spacing:.02em;text-decoration:none}
+.logo b{color:var(--ac);font-weight:700}
+.nl{display:flex;gap:36px;align-items:center}
+.nl a{font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--tx2);text-decoration:none;transition:color .2s}
+.nl a:hover{color:var(--tx)}
+.nr{display:flex;align-items:center;gap:16px}
+.tog{width:48px;height:26px;border-radius:100px;background:var(--tb);border:1px solid var(--br2);position:relative;cursor:none;flex-shrink:0}
+.tok{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--tk);transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 6px rgba(61,130,255,.4)}
+[data-theme="light"] .tok{transform:translateX(22px)}
+.bk{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);text-decoration:none;transition:color .2s}
+.bk:hover{color:var(--tx)}
+/* page layout */
+.page{padding:120px 56px 80px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1.35fr;gap:72px;align-items:start}
+/* info side */
+.info-head{margin-bottom:32px}
+.info-head h1{margin-top:14px;margin-bottom:16px}
+.info-head p{font-size:15.5px}
+.detail-list{list-style:none;display:flex;flex-direction:column;gap:18px;margin-top:32px}
+.detail-list li{display:flex;align-items:flex-start;gap:14px}
+.di{width:36px;height:36px;flex-shrink:0;border:1px solid var(--br2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ac2)}
+.dl{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ac2);margin-bottom:3px}
+.dv{font-size:14px;color:var(--tx);font-weight:400}
+/* form side */
+.form-wrap{background:var(--card);border:1px solid var(--br2);border-radius:6px;padding:40px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fgrp{display:flex;flex-direction:column;gap:6px;position:relative}
+.fgrp.full{grid-column:1/-1}
+.flbl{font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ac2)}
+.fi,.fs,.fta{
+  background:var(--input);border:1px solid var(--br2);color:var(--tx);
+  padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;
+  outline:none;transition:border-color .2s;width:100%;appearance:none;border-radius:4px;
+}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--ac)}
+.fi::placeholder,.fta::placeholder{color:var(--tx3)}
+.fs option{background:var(--bg2);color:var(--tx)}
+.fta{resize:vertical;min-height:90px}
+.fgrp.err .fi,.fgrp.err .fs{border-color:var(--err)}
+.emsg{font-size:11px;color:var(--err);display:none;margin-top:3px}
+.fgrp.err .emsg{display:block}
+/* calendar */
+.cal-wrap{background:var(--bg);border:1px solid var(--br2);padding:18px;border-radius:4px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-nav-btn{background:none;border:1px solid var(--br2);color:var(--tx);width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:none;font-size:14px;transition:border-color .2s,color .2s;border-radius:3px}
+.cal-nav-btn:hover{border-color:var(--ac);color:var(--ac2)}
+.cal-month{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:600;color:var(--tx)}
+.dgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dh{font-size:10px;font-weight:700;text-align:center;color:var(--tx3);letter-spacing:.1em;padding:4px 0}
+.dc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--tx2);cursor:none;border:1px solid transparent;border-radius:3px;transition:all .18s;position:relative}
+.dc:hover:not(.dis):not(.emp){border-color:var(--ac);color:var(--ac2);background:var(--acd)}
+.dc.sel{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.dc.dis{opacity:.18;cursor:not-allowed}
+.dc.tod::after{content:'';position:absolute;bottom:3px;width:3px;height:3px;border-radius:50%;background:var(--ac2)}
+.dc.sel.tod::after{background:#fff}
+.sel-date{font-size:12px;color:var(--ac2);margin-top:10px;min-height:18px;letter-spacing:.06em;font-weight:500}
+/* timezone tabs */
+.tz-tabs{display:flex;gap:8px;margin-bottom:12px}
+.tz-tab{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border:1px solid var(--br2);color:var(--tx2);cursor:none;border-radius:3px;transition:all .2s;background:transparent}
+.tz-tab.act{background:var(--acd);border-color:var(--acb);color:var(--ac2)}
+.ts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ts{padding:10px 4px;border:1px solid var(--br2);text-align:center;cursor:none;border-radius:3px;transition:all .18s}
+.ts:hover{border-color:var(--ac);background:var(--acd)}
+.ts.sel{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+.ts-main{font-size:11.5px;color:var(--tx2);display:block;font-weight:500}
+.ts.sel .ts-main{color:#fff}
+.ts-sub{font-size:9.5px;color:var(--tx3);display:block;margin-top:2px}
+.ts.sel .ts-sub{color:rgba(255,255,255,.7)}
+/* submit */
+.sub-btn{
+  margin-top:24px;width:100%;background:var(--ac);color:#fff;
+  border:none;padding:16px;border-radius:4px;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  cursor:none;transition:opacity .2s,transform .2s;
+  box-shadow:0 3px 20px rgba(61,130,255,.35);
+}
+.sub-btn:hover{opacity:.88;transform:translateY(-1px)}
+.sub-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+/* success */
+.success{display:none;text-align:center;padding:48px 32px;border:1px solid var(--acb);background:var(--acd);border-radius:6px}
+.success.show{display:block}
+.s-icon{font-size:38px;margin-bottom:14px}
+.s-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:700;color:var(--tx);margin-bottom:10px}
+.s-sub{font-size:14.5px;color:var(--tx2);line-height:1.75}
+footer{padding:40px 56px;border-top:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+.fl{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:17px;color:var(--tx);letter-spacing:.02em}
+.fl b{color:var(--ac2);font-weight:700}
+.fc{font-size:11.5px;color:var(--tx3)}
+@media(max-width:960px){
+  nav{padding:16px 20px}.nl{display:none}
+  .page{padding:100px 20px 60px;grid-template-columns:1fr;gap:40px}
+  .form-wrap{padding:28px 20px}
+  .fg{grid-template-columns:1fr}
+  .ts-grid{grid-template-columns:repeat(3,1fr)}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:28px 20px}
+}
 </style>
 </head>
 <body>
+<div class="cur" id="cur"><div class="cur-d"></div></div>
+<div class="cur-r" id="curR"></div>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
-<!-- NAV -->
-<nav id="navbar">
-  <a href="nolvex.html" class="nav-logo">NOLVEX<span>.</span></a>
-  <div class="nav-links">
+<nav id="nav">
+  <a href="nolvex.html" class="logo">Nolvex<b>.</b></a>
+  <div class="nl">
     <a href="nolvex.html#about">About</a>
     <a href="nolvex.html#services">Services</a>
-    <a href="nolvex.html#pricing">Pricing</a>
     <a href="nolvex.html#results">Results</a>
-    <a href="nolvex.html#contact">Contact</a>
+    <a href="pricing.html">Pricing</a>
   </div>
-  <div class="nav-right">
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-      <span class="theme-toggle-icon icon-moon">🌙</span>
-      <span class="theme-toggle-knob"></span>
-      <span class="theme-toggle-icon icon-sun">☀️</span>
-    </button>
-    <a href="nolvex.html#contact" class="nav-cta">Book a Call</a>
+  <div class="nr">
+    <button class="tog" id="themeBtn" aria-label="Toggle theme"><div class="tok"></div></button>
   </div>
 </nav>
 
-<!-- PAGE HERO -->
-<div class="page-hero">
-  <a href="nolvex.html" class="back-link">← Back to Home</a>
-  <div class="page-hero-tag">Service Plans</div>
-  <h1>Everything Included.<br /><em>Nothing Hidden.</em></h1>
-  <p class="page-hero-sub">A full breakdown of what you receive at each tier — creative, strategy, reporting, and support. Every plan is built to generate measurable ROI from day one.</p>
-</div>
-
-<!-- SERVICES DETAIL -->
-<div class="services-page">
-  <div class="services-page-inner">
-
-    <!-- BASIC -->
-    <div class="plan-section reveal">
-      <div class="plan-header">
-        <div>
-          <div class="plan-label">Entry Tier</div>
-          <div class="plan-name">Basic Plan</div>
-        </div>
-        <div>
-          <div class="plan-price"><span>$</span>1,500</div>
-          <div class="plan-price-cycle">per month / min. 3 months</div>
-        </div>
-      </div>
-
-      <div class="plan-badge">◆ Best for: Starting out or testing a single channel</div>
-      <p class="plan-desc">The Basic plan is designed for businesses looking to establish a proven ad presence on their primary platform. You get the full Nolvex strategy and creative process — just focused on one channel and a controlled budget.</p>
-
-      <div class="deliverables">
-        <div class="deliverable-block">
-          <span class="deliverable-icon">◉</span>
-          <div class="deliverable-title">Platform & Campaign Setup</div>
-          <p class="deliverable-desc">Full account audit and build from the ground up on your chosen platform.</p>
-          <ul class="deliverable-list">
-            <li>1 Ad platform (Facebook or LinkedIn)</li>
-            <li>Up to $2,000/mo ad spend managed</li>
-            <li>2 active ad campaigns running simultaneously</li>
-            <li>Pixel installation and event tracking setup</li>
-          </ul>
-        </div>
-        <div class="deliverable-block">
-          <span class="deliverable-icon">◈</span>
-          <div class="deliverable-title">Audience Research</div>
-          <p class="deliverable-desc">Precision audience identification before a single dollar is spent.</p>
-          <ul class="deliverable-list">
-            <li>Custom audience research & mapping</li>
-            <li>Interest + behavioral targeting layers</li>
-            <li>Basic lookalike audience creation</li>
-          </ul>
-        </div>
-        <div class="deliverable-block">
-          <span class="deliverable-icon">◆</span>
-          <div class="deliverable-title">Creative & Copy</div>
-          <p class="deliverable-desc">Scroll-stopping ads that speak to your audience's specific pain points.</p>
-          <ul class="deliverable-list">
-            <li>4 static ad creatives per month</li>
-            <li>Professional ad copywriting</li>
-            <li>A/B creative testing (2 variations)</li>
-          </ul>
-        </div>
-        <div class="deliverable-block">
-          <span class="deliverable-icon">▣</span>
-          <div class="deliverable-title">Reporting & Support</div>
-          <p class="deliverable-desc">Clear numbers, no jargon. Know exactly what your spend is producing.</p>
-          <ul class="deliverable-list">
-            <li>Monthly performance report (PDF)</li>
-            <li>Key metrics: leads, CPL, ROAS, reach</li>
-            <li>Email support with 48hr response time</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="plan-cta-row">
-        <a href="nolvex.html#contact" class="cta-primary">Start with Basic →</a>
-        <span class="cta-note">Free strategy call included before commitment</span>
-      </div>
+<div class="page">
+  <!-- INFO SIDE -->
+  <div class="info-side">
+    <a href="nolvex.html" class="bk">← Back to Home</a>
+    <div class="info-head">
+      <div class="lbl" style="margin-top:20px;margin-bottom:14px">Free Strategy Call</div>
+      <h1 class="fd">Book Your <em>Discovery Call</em></h1>
+      <p style="margin-top:14px">Fill in the form and we'll set up a free 30-minute strategy call over Google Meet. We'll analyze your business and show you exactly how we'd generate leads for you — no obligation.</p>
     </div>
+    <ul class="detail-list">
+      <li>
+        <div class="di">◉</div>
+        <div><div class="dl">Response Time</div><div class="dv">Within 24 hours</div></div>
+      </li>
+      <li>
+        <div class="di">◆</div>
+        <div><div class="dl">Call Duration</div><div class="dv">30 minutes, no obligation</div></div>
+      </li>
+      <li>
+        <div class="di">◈</div>
+        <div><div class="dl">Platform</div><div class="dv">Google Meet — link sent by email</div></div>
+      </li>
+      <li>
+        <div class="di">▣</div>
+        <div><div class="dl">Who We Serve</div><div class="dv">USA &amp; India clients welcome</div></div>
+      </li>
+      <li>
+        <div class="di">◐</div>
+        <div><div class="dl">Time Zones</div><div class="dv">EST and IST slots available</div></div>
+      </li>
+    </ul>
+  </div>
 
-    <div class="plan-separator"></div>
-
-    <!-- SWEET -->
-    <div class="plan-section reveal">
-      <div class="plan-header">
-        <div>
-          <div class="plan-badge featured">★ Most Popular</div>
-          <div class="plan-label">Growth Tier</div>
-          <div class="plan-name">Sweet Plan</div>
+  <!-- FORM SIDE -->
+  <div class="form-side">
+    <div class="form-wrap" id="formWrap">
+      <form id="bookForm">
+        <div class="fg">
+          <div class="fgrp" id="g-name">
+            <label class="flbl">Full Name *</label>
+            <input type="text" class="fi" id="iName" placeholder="John Smith"/>
+            <span class="emsg">Please enter your name</span>
+          </div>
+          <div class="fgrp" id="g-phone">
+            <label class="flbl">Phone Number *</label>
+            <input type="tel" class="fi" id="iPhone" placeholder="+1 (555) 000-0000"/>
+            <span class="emsg">Please enter a valid phone number</span>
+          </div>
+          <div class="fgrp" id="g-loc">
+            <label class="flbl">City &amp; Country *</label>
+            <input type="text" class="fi" id="iLoc" placeholder="Miami, FL / Mumbai, India"/>
+            <span class="emsg">Please enter your location</span>
+          </div>
+          <div class="fgrp" id="g-budget">
+            <label class="flbl">Monthly Ad Budget *</label>
+            <select class="fs" id="iBudget">
+              <option value="">Select your budget</option>
+              <option>Under $500/mo</option>
+              <option>$500 – $1,000/mo</option>
+              <option>$1,000 – $2,500/mo</option>
+              <option>$2,500 – $5,000/mo</option>
+              <option>$5,000+/mo</option>
+            </select>
+            <span class="emsg">Please select a budget range</span>
+          </div>
+          <div class="fgrp full" id="g-biz">
+            <label class="flbl">Business Type</label>
+            <select class="fs" id="iBiz">
+              <option value="">Select your industry</option>
+              <option>Med Spa / Aesthetics Clinic</option>
+              <option>Real Estate Agent</option>
+              <option>Real Estate Broker / Team</option>
+              <option>Mortgage Broker</option>
+              <option>Hair Salon / Beauty</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="fgrp full">
+            <label class="flbl">Select Date *</label>
+            <div class="cal-wrap" id="calWrap"></div>
+            <div class="sel-date" id="selDate">No date selected</div>
+            <input type="hidden" id="iDate"/>
+            <span class="emsg" id="dateErr" style="display:none">Please select a date</span>
+          </div>
+          <div class="fgrp full">
+            <label class="flbl">Preferred Time *</label>
+            <div class="tz-tabs">
+              <button type="button" class="tz-tab act" id="tz-usa" onclick="setTZ('usa')">🇺🇸 USA (EST)</button>
+              <button type="button" class="tz-tab" id="tz-in" onclick="setTZ('india')">🇮🇳 India (IST)</button>
+            </div>
+            <div class="ts-grid" id="tsGrid"></div>
+            <input type="hidden" id="iTime"/>
+            <span class="emsg" id="timeErr" style="display:none">Please select a time slot</span>
+          </div>
+          <div class="fgrp full">
+            <label class="flbl">Message (Optional)</label>
+            <textarea class="fta" id="iMsg" placeholder="Tell us briefly about your business and goals..."></textarea>
+          </div>
         </div>
-        <div>
-          <div class="plan-price"><span>$</span>2,500</div>
-          <div class="plan-price-cycle">per month / min. 3 months</div>
-        </div>
-      </div>
-
-      <p class="plan-desc">The Sweet plan is our most popular choice for scaling businesses. You get dual-platform coverage, premium video creatives, and bi-weekly strategy calls that keep campaigns performing at their peak. Most clients see significant ROI improvements within 45–60 days.</p>
-
-      <div class="deliverables">
-        <div class="deliverable-block">
-          <span class="deliverable-icon">◉</span>
-          <div class="deliverable-title">Multi-Platform Management</div>
-          <p class="deliverable-desc">Coordinated campaigns across both Facebook and LinkedIn for maximum reach.</p>
-          <ul class="deliverable-list">
-            <li>Facebook + LinkedIn active simultaneously</li>
-            <li>Up to $5,000/mo ad spend managed</li>
-            <li>4 active ad campaigns across both platforms</li>
-            <li>Cross-platform audience strategy</li>
-          </ul>
-        </div>
-        <div class="deliverable-block">
-          <span class="deliverable-icon">◈</span>
-          <div class="deliverable-title">Advanced Audience Strategy</div>
-          <p class="deliverable-desc">Smarter targeting that finds your ideal client and brings back the ones who almost converted.</p>
-          <ul class="deliverable-list">
-            <li>Lookalike audiences (1%, 3%, 5% tiers)</li>
-            <li>Full retargeting funnel (website + video viewers)</li>
-            <li>Warm audience segmentation</li>
-            <li>Exclusion audience optimization</li>
-          </ul>
-        </div>
-        <div class="deliverable-block">
-          <span class="deliverable-icon">◆</span>
-          <div class="deliverable-title">Premium Creative Production</div>
-          <p class="deliverable-desc">Elevated creative formats including video ads that outperform static in most industries.</p>
-          <ul class="deliverable-list">
-            <li>8 ad creatives per month (static + video)</li>
-            <li>Short-form video ad editing (15–30s)</li>
-            <li>A/B testing (4 variations per campaign)</li>
-            <li>Carousel & story ad formats</li>
-          </ul>
-        </div>
-        <div class="deliverable-block">
-          <span class="deliverable-icon">▣</span>
-          <div class="deliverable-title">Strategy, Reporting & Support</div>
-          <p class="deliverable-desc">Closer collaboration and faster optimization cycles for better results.</p>
-          <ul class="deliverable-list">
-            <li>Bi-weekly 30-min strategy calls (Google Meet)</li>
-            <li>Real-time dashboard access (live data)</li>
-            <li>Weekly snapshot reports via email</li>
-            <li>Priority support with 24hr response time</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="plan-cta-row">
-        <a href="nolvex.html#contact" class="cta-primary">Start with Sweet →</a>
-        <span class="cta-note">Free strategy call included before commitment</span>
-      </div>
+        <button type="submit" class="sub-btn" id="subBtn">Book My Free Strategy Call →</button>
+      </form>
     </div>
-
-    <div class="plan-separator"></div>
-
-    <!-- STANDARD -->
-    <div class="plan-section reveal">
-      <div class="plan-header">
-        <div>
-          <div class="plan-label">Premium Tier</div>
-          <div class="plan-name">Standard Plan</div>
-        </div>
-        <div>
-          <div class="plan-price"><span>$</span>5,000</div>
-          <div class="plan-price-cycle">per month / min. 3 months</div>
-        </div>
-      </div>
-
-      <p class="plan-desc">The Standard plan is our full-service engagement — designed for businesses serious about rapid, measurable growth. You get every platform, unlimited campaigns, full funnel buildout including landing pages, CRM integration, a dedicated account manager, and the fastest support in the industry. This is what scaling looks like.</p>
-
-      <div class="deliverables">
-        <div class="deliverable-block">
-          <span class="deliverable-icon">◉</span>
-          <div class="deliverable-title">All-Platform Coverage</div>
-          <p class="deliverable-desc">Dominate every relevant channel where your clients spend time online.</p>
-          <ul class="deliverable-list">
-            <li>Facebook, LinkedIn, Google Ads — all active</li>
-            <li>Unlimited ad spend management</li>
-            <li>Unlimited active campaign count</li>
-            <li>Google Search + Display campaigns</li>
-          </ul>
-        </div>
-        <div class="deliverable-block">
-          <span class="deliverable-icon">◈</span>
-          <div class="deliverable-title">Full Funnel Strategy & Build</div>
-          <p class="deliverable-desc">Not just ads — a complete acquisition system from first touch to booked appointment.</p>
-          <ul class="deliverable-list">
-            <li>Custom landing page design & build</li>
-            <li>A/B tested landing page variations</li>
-            <li>Lead magnet strategy & copy</li>
-            <li>Thank-you page + follow-up sequences</li>
-          </ul>
-        </div>
-        <div class="deliverable-block">
-          <span class="deliverable-icon">◆</span>
-          <div class="deliverable-title">CRM & Tech Integration</div>
-          <p class="deliverable-desc">Your leads delivered exactly where you need them, the moment they convert.</p>
-          <ul class="deliverable-list">
-            <li>CRM integration (HubSpot, GHL, Salesforce, etc.)</li>
-            <li>Automated lead routing & tagging</li>
-            <li>Lead notification system setup</li>
-            <li>Zapier automation configuration</li>
-          </ul>
-        </div>
-        <div class="deliverable-block">
-          <span class="deliverable-icon">▣</span>
-          <div class="deliverable-title">White-Glove Account Management</div>
-          <p class="deliverable-desc">A dedicated point of contact who knows your business inside out.</p>
-          <ul class="deliverable-list">
-            <li>Dedicated account manager</li>
-            <li>Weekly 60-min strategy calls</li>
-            <li>Private Slack channel for real-time communication</li>
-            <li>Priority support — 12hr response guarantee</li>
-            <li>Quarterly growth audit + roadmap session</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="plan-cta-row">
-        <a href="nolvex.html#contact" class="cta-primary">Start with Standard →</a>
-        <span class="cta-note">Free strategy call included before commitment</span>
-      </div>
+    <div class="success" id="successBox">
+      <div class="s-icon">✦</div>
+      <div class="s-title">You're Booked.</div>
+      <p class="s-sub">Your discovery call has been scheduled.<br>You'll receive a Google Meet link within 24 hours.<br><br>We look forward to building your growth engine.</p>
     </div>
-
-    <div class="plan-separator"></div>
-
-    <!-- FAQ -->
-    <div class="faq-section reveal">
-      <div class="faq-title">Common Questions</div>
-
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Is there a setup fee?</div>
-        <div class="faq-a">No setup fees on any plan. The monthly retainer covers everything — strategy, setup, creatives, management, and reporting. What you see is what you pay.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What's the minimum commitment?</div>
-        <div class="faq-a">All plans require a minimum 3-month engagement. Paid advertising takes time to optimize — typically 30–45 days to reach peak performance. The 3-month window ensures we can deliver real results rather than just initial data.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Is my ad spend included in the plan cost?</div>
-        <div class="faq-a">No — the plan fee covers management, strategy, and creative. Your ad spend budget is separate and paid directly to the ad platforms (Facebook/Google/LinkedIn). We manage it on your behalf within the limits outlined in each plan.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can I upgrade my plan mid-engagement?</div>
-        <div class="faq-a">Absolutely. Many clients start on Basic or Sweet and upgrade as results build. Upgrades can happen at the start of any new billing month. There's no penalty or additional fee for switching tiers.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Do you work with businesses outside the USA?</div>
-        <div class="faq-a">Yes — we now work with India-based businesses as well. Discovery calls are available at times convenient for both EST and IST timezones. All plans and pricing remain the same regardless of your location.</div>
-      </div>
-    </div>
-
   </div>
 </div>
 
 <footer>
-  <div class="footer-logo">NOLVEX<span>.</span></div>
-  <div class="footer-copy">© 2026 Nolvex. Founded by Nishk. All rights reserved.</div>
+  <div class="fl">Nolvex<b>.</b></div>
+  <div class="fc">© 2026 Nolvex. Founded by Nishk. All rights reserved.</div>
 </footer>
 
 <script>
+const {createClient}=supabase;
+const sb=createClient('https://rbbazflmhkzxtfwabyuy.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJiYmF6ZmxtaGt6eHRmd2FieXV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMDQ4MDMsImV4cCI6MjA5MDg4MDgwM30.WVtdQqZlWFV-t8YYrp5aO3DFvFFB0VKbwpHc4fkYSqg');
+
 // THEME
-const htmlEl = document.documentElement;
-const themeToggle = document.getElementById('themeToggle');
-function initTheme() {
-  const saved = localStorage.getItem('nolvex-theme');
-  if (saved) { htmlEl.setAttribute('data-theme', saved); }
-  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) { htmlEl.setAttribute('data-theme', 'light'); }
-}
-initTheme();
-themeToggle.addEventListener('click', () => {
-  const current = htmlEl.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  htmlEl.setAttribute('data-theme', next);
-  localStorage.setItem('nolvex-theme', next);
-});
+const ht=document.documentElement,tb=document.getElementById('themeBtn');
+(()=>{const s=localStorage.getItem('nv-t');if(s)ht.setAttribute('data-theme',s);else if(matchMedia('(prefers-color-scheme:light)').matches)ht.setAttribute('data-theme','light')})();
+tb.addEventListener('click',()=>{const n=ht.getAttribute('data-theme')==='dark'?'light':'dark';ht.setAttribute('data-theme',n);localStorage.setItem('nv-t',n)});
 
 // CURSOR
-const cursor = document.getElementById('cursor');
-const cursorRing = document.getElementById('cursorRing');
-let mouseX=0,mouseY=0,ringX=0,ringY=0;
-document.addEventListener('mousemove',e=>{ mouseX=e.clientX; mouseY=e.clientY; cursor.style.left=mouseX+'px'; cursor.style.top=mouseY+'px'; });
-function animateRing(){ ringX+=(mouseX-ringX)*.12; ringY+=(mouseY-ringY)*.12; cursorRing.style.left=ringX+'px'; cursorRing.style.top=ringY+'px'; requestAnimationFrame(animateRing); }
-animateRing();
-document.querySelectorAll('button,a,.faq-q,.deliverable-block').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{ cursor.style.width='18px'; cursor.style.height='18px'; cursorRing.style.width='46px'; cursorRing.style.height='46px'; });
-  el.addEventListener('mouseleave',()=>{ cursor.style.width='8px'; cursor.style.height='8px'; cursorRing.style.width='32px'; cursorRing.style.height='32px'; });
+const cur=document.getElementById('cur'),ring=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function t(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(t)})();
+document.querySelectorAll('a,button,.dc,.ts').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.querySelector('.cur-d').style.cssText='width:15px;height:15px';ring.style.cssText='width:40px;height:40px;position:fixed;border:1.5px solid var(--ac);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.35'});
+  el.addEventListener('mouseleave',()=>{cur.querySelector('.cur-d').style.cssText='width:7px;height:7px';ring.style.cssText='width:30px;height:30px;position:fixed;border:1.5px solid var(--ac);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.35'});
 });
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('sc',scrollY>50));
 
-// NAV SCROLL
-window.addEventListener('scroll', () => { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50); });
+// CALENDAR
+let cY,cM,selD=null;
+const today=new Date();
+cY=today.getFullYear();cM=today.getMonth();
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_S=['Su','Mo','Tu','We','Th','Fr','Sa'];
+const MONTHS_S=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS_L=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-// REVEAL
-const observer = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.08 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-// FAQ
-function toggleFaq(el) {
-  const a = el.nextElementSibling;
-  el.classList.toggle('open');
-  a.classList.toggle('open');
+function renderCal(){
+  const fd=new Date(cY,cM,1).getDay();
+  const dim=new Date(cY,cM+1,0).getDate();
+  let h=`<div class="cal-nav"><button class="cal-nav-btn" onclick="chM(-1)">&#8249;</button><span class="cal-month">${MONTHS[cM]} ${cY}</span><button class="cal-nav-btn" onclick="chM(1)">&#8250;</button></div><div class="dgrid">`;
+  DAYS_S.forEach(d=>h+=`<div class="dh">${d}</div>`);
+  for(let i=0;i<fd;i++)h+=`<div class="dc emp"></div>`;
+  for(let d=1;d<=dim;d++){
+    const dt=new Date(cY,cM,d);
+    const past=dt<new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const isToday=d===today.getDate()&&cM===today.getMonth()&&cY===today.getFullYear();
+    const wknd=dt.getDay()===0||dt.getDay()===6;
+    const isSel=selD&&selD.getFullYear()===cY&&selD.getMonth()===cM&&selD.getDate()===d;
+    let cls='dc';
+    let click='';
+    if(past||wknd)cls+=' dis';
+    else click=` onclick="pickD(${d})"`;
+    if(isToday)cls+=' tod';
+    if(isSel)cls+=' sel';
+    h+=`<div class="${cls}"${click}>${d}</div>`;
+  }
+  h+=`</div>`;
+  document.getElementById('calWrap').innerHTML=h;
 }
+function chM(dir){cM+=dir;if(cM<0){cM=11;cY--}if(cM>11){cM=0;cY++}renderCal()}
+function pickD(d){
+  selD=new Date(cY,cM,d);
+  document.getElementById('selDate').textContent=`✦ ${DAYS_L[selD.getDay()]}, ${MONTHS_S[cM]} ${d}, ${cY}`;
+  document.getElementById('iDate').value=`${cY}-${String(cM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  document.getElementById('dateErr').style.display='none';
+  renderCal();
+}
+renderCal();
+
+// TIME SLOTS
+const TZ={
+  usa:[
+    {m:'8:00 AM EST',s:'6:30 PM IST',v:'8:00 AM EST'},
+    {m:'9:00 AM EST',s:'7:30 PM IST',v:'9:00 AM EST'},
+    {m:'10:00 AM EST',s:'8:30 PM IST',v:'10:00 AM EST'},
+    {m:'11:00 AM EST',s:'9:30 PM IST',v:'11:00 AM EST'},
+    {m:'12:00 PM EST',s:'10:30 PM IST',v:'12:00 PM EST'},
+    {m:'1:00 PM EST',s:'11:30 PM IST',v:'1:00 PM EST'},
+    {m:'2:00 PM EST',s:'12:30 AM IST+1',v:'2:00 PM EST'},
+    {m:'3:00 PM EST',s:'1:30 AM IST+1',v:'3:00 PM EST'},
+  ],
+  india:[
+    {m:'9:00 AM IST',s:'10:30 PM EST-1',v:'9:00 AM IST'},
+    {m:'10:00 AM IST',s:'11:30 PM EST-1',v:'10:00 AM IST'},
+    {m:'6:00 PM IST',s:'7:30 AM EST',v:'6:00 PM IST'},
+    {m:'7:00 PM IST',s:'8:30 AM EST',v:'7:00 PM IST'},
+    {m:'7:30 PM IST',s:'9:00 AM EST',v:'7:30 PM IST'},
+    {m:'8:30 PM IST',s:'10:00 AM EST',v:'8:30 PM IST'},
+    {m:'9:30 PM IST',s:'11:00 AM EST',v:'9:30 PM IST'},
+    {m:'10:30 PM IST',s:'12:00 PM EST',v:'10:30 PM IST'},
+  ]
+};
+let curTZ='usa';
+function setTZ(tz){
+  curTZ=tz;
+  document.getElementById('tz-usa').classList.toggle('act',tz==='usa');
+  document.getElementById('tz-in').classList.toggle('act',tz==='india');
+  document.getElementById('iTime').value='';
+  renderTS();
+}
+function renderTS(){
+  const g=document.getElementById('tsGrid');
+  g.innerHTML=TZ[curTZ].map(s=>`<div class="ts" data-v="${s.v}" onclick="pickT(this)"><span class="ts-main">${s.m}</span><span class="ts-sub">${s.s}</span></div>`).join('');
+}
+function pickT(el){
+  document.querySelectorAll('.ts').forEach(t=>t.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('iTime').value=el.dataset.v;
+  document.getElementById('timeErr').style.display='none';
+}
+renderTS();
+
+// FORM SUBMIT
+document.getElementById('bookForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  const name=document.getElementById('iName').value.trim();
+  const phone=document.getElementById('iPhone').value.trim();
+  const loc=document.getElementById('iLoc').value.trim();
+  const budget=document.getElementById('iBudget').value;
+  const biz=document.getElementById('iBiz').value;
+  const date=document.getElementById('iDate').value;
+  const time=document.getElementById('iTime').value;
+  const msg=document.getElementById('iMsg').value.trim();
+  let ok=true;
+  const v=(id,cond)=>{const g=document.getElementById(id);cond?g.classList.remove('err'):((g.classList.add('err')),ok=false)};
+  v('g-name',name.length>1);v('g-phone',phone.length>6);v('g-loc',loc.length>2);v('g-budget',budget!=='');
+  if(!date){document.getElementById('dateErr').style.display='block';ok=false}
+  if(!time){document.getElementById('timeErr').style.display='block';ok=false}
+  if(!ok)return;
+  const btn=document.getElementById('subBtn');
+  btn.disabled=true;btn.textContent='Booking your call...';
+  try{
+    const{error}=await sb.from('nolvex_leads').insert([{full_name:name,phone,location:loc,monthly_ad_budget:budget,business_type:biz||null,appointment_date:date,appointment_time:time,message:msg||null}]);
+    if(error)throw error;
+    document.getElementById('formWrap').style.display='none';
+    const s=document.getElementById('successBox');s.classList.add('show');s.scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(err){
+    console.error(err);btn.disabled=false;btn.textContent='Book My Free Strategy Call →';
+    alert('Something went wrong. Please try again.');
+  }
+});
 </script>
 </body>
 </html>
